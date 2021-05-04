@@ -1,0 +1,140 @@
+PROBLEM STATEMENT:
+Q. Student database using File IO in java.
+
+CODE IN JAVA:
+//package student_db;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+class Student_DB {
+     
+//***********CHARACTER STREAM***************   
+    public static void get_student() throws FileNotFoundException, IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("How many records you want to enter");
+        int n = Integer.parseInt(br.readLine()); 
+   
+        for(int i=0;i<n;i++){
+            try{
+                String name,branch;
+                int Roll_no;
+
+                System.out.print("Enter the name: ");
+                name = br.readLine();
+                System.out.print("Enter the roll Number: ");
+                Roll_no = Integer.parseInt(br.readLine());              
+                System.out.print("Enter the Branch: ");
+                branch = br.readLine();
+                
+                PrintWriter pr = new PrintWriter(new FileWriter("D:\\Student_DB.txt",true));
+                pr.println(name);
+                pr.println(Roll_no);
+                pr.println(branch);
+                pr.close();    
+            }catch(IOException ie){
+                System.out.println("IOException generated");
+            }
+        }
+    }
+    
+    public static void show_student(){
+        try{
+            BufferedReader br = new BufferedReader(new FileReader("D:\\Student_DB.txt"));
+            String name;
+            
+            System.out.print("\n---------------------------------------\n");
+            System.out.print("Name" + "\t\t"+"Roll no"+"\t"+"Branch");
+            System.out.print("\n---------------------------------------\n");
+            while((name = br.readLine()) != null){
+                
+                System.out.print(name+"\t\t");
+                System.out.print(br.readLine()+"\t");
+                System.out.print(br.readLine()); 
+                System.out.println("");
+            }
+            br.close();
+        }catch(IOException ie){
+            System.out.println("IOException generated");
+        }
+    }
+    
+    //**********BYTE STREAM**************
+    
+    public static void get(){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("How many records you want to enter: ");
+        int n = scan.nextInt();
+        for(int i=0; i<n ;i++){
+            System.out.print("Enter name:");
+            String name = scan.next();
+            System.out.print("Enter Roll_no:");
+            int roll_no = scan.nextInt();
+            System.out.print("Enter the Branch: ");
+            String branch = scan.next();
+            
+            try{
+                DataOutputStream dout = new DataOutputStream(new FileOutputStream("D:\\Student_DB.dat",true));
+                dout.writeUTF(name);
+                dout.writeInt(roll_no);
+                dout.writeUTF(branch);
+            }catch(IOException ie){
+                System.out.println("IOException generated");
+            }
+        }
+    }
+    
+    public static void show(){
+        try{
+            DataInputStream din = new DataInputStream(new FileInputStream("D:\\Student_DB.dat"));
+            System.out.print("\n---------------------------------------\n");
+            System.out.print("Name" + "\t\t"+"Roll no"+"\t"+"Branch");
+            System.out.print("\n---------------------------------------\n");
+            while(true){
+                String name = din.readUTF();
+                int roll_no = din.readInt();
+                String branch = din.readUTF();
+            
+                System.out.println(name + "\t\t" + roll_no + "\t" + branch);
+            }
+        }catch(IOException ie){}
+    }
+}   
+//******************************
+public class Main{
+    public static void main(String args[]) throws IOException{
+        
+        Scanner scan = new Scanner(System.in);
+        Student_DB s = new Student_DB();
+        while(true){
+            System.out.println("1.Character Stream\n2.Byte Stream\n3.Exit");
+            int choice = scan.nextInt();
+            if(choice == 3)
+                    break;
+              
+            switch(choice){
+                case 1:{
+                    s.get_student();
+                    s.show_student();
+                    break;
+                }
+                case 2:{
+                    s.get();
+                    s.show();
+                    break;
+                }
+        
+            }
+        }  
+    }
+}
